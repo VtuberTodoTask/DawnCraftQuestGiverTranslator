@@ -21,6 +21,12 @@ class File {
         }
         return path.parse(this.path).ext === ".json"
     }
+    isJarFile() {
+        if (this.isDirectory()) {
+            return false
+        }
+        return path.parse(this.path).ext === ".jar"
+    }
     getBaseName() {
         return path.basename(this.path)
     }

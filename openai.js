@@ -1,4 +1,5 @@
 const {OpenAI} = require("openai")
+const util = require("./util")
 
 const Model = "gpt-4o-mini-2024-07-18"
 const BasePrompt = `
@@ -6,7 +7,8 @@ minecraftのmodの翻訳を手伝ってください。
 今からjson形式のデータを渡されたら、以下のルールに沿って翻訳を行ってください。
 
 ### 翻訳のルール
-・文章は日本語に翻訳してください
+・文章は日本語に翻訳してください。
+・翻訳時、単語はマインクラフトの翻訳ガイドラインを厳守してください。
 ・jsonデータのtextという名前のフィールドのみ翻訳してください
 ・jsonデータの形式はそのまま残してください
 ・「$(red)fire$()」のように「$(color)...$()」で囲まれた文章はその中身のみ翻訳し、翻訳後に同じ記述で囲いなおしてください
@@ -36,36 +38,43 @@ class OpenAITranslator {
             apiKey: apiKey
         })
     }
-    async translate(jsonString) {
-        const response = await this.client.chat.completions.create({
-            model: Model,
-            messages: [
-                {
-                    role: "system",
-                    content: [
-                        {
-                            type: "text",
-                            text: BasePrompt
-                        }
-                    ]
-                },
-                {
-                    role: "user",
-                    content: [
-                        {
-                            type: "text",
-                            text: jsonString
-                        }
-                    ]
-                }
-            ]
-        })
+    async translate(jsonString, prompt) {
+        try {
+            const response = await this.client.chat.completions.create({
+                model: Model,
+                messages: [
+                    {
+                        role: "system",
+                        content: [
+                            {
+                                type: "text",
+                                text: prompt
+                            }
+                        ]
+                    },
+                    {
+                        role: "user",
+                        content: [
+                            {
+                                type: "text",
+                                text: jsonString
+                            }
+                        ]
+                    }
+                ]
+            })
 
-        if (response.choices && response.choices[0].message) {
-            const translatedText = response.choices[0].message.content
-            return translatedText
+            if (response.choices && response.choices[0].message) {
+                const translatedText = response.choices[0].message.content
+                return translatedText
+            }
         }
-
+        catch(e) {
+            util.updateProgress(e)
+            console.log(jsonString)
+            console.log(e)
+        }
+        
         return ""
     }
 }

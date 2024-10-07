@@ -3,6 +3,7 @@ const path = require("node:path")
 const File = require("./files")
 const OpenAITranslator = require("./openai")
 const util = require("./util")
+const prompt = require("./prompt")
 
 class Executer {
     /**
@@ -67,7 +68,7 @@ class Executer {
             if (!content) {
                 throw new Error(`cannot read file: ${child.path}`)
             }
-            const translated = await translater.translate(content)
+            const translated = await translater.translate(content, prompt.QuestGiverPrompt)
             if (!translated) {
                 throw new Error(`translate failed!`)
             }

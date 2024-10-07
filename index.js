@@ -2,6 +2,7 @@ const { app, dialog, BrowserWindow, ipcMain } = require('electron')
 const path = require('node:path')
 
 const Executer = require("./executer")
+const ModExecuter = require("./modExecuter")
 const util = require("./util")
 
 const createWindow = () => {
@@ -14,6 +15,13 @@ const createWindow = () => {
     })
     win.setMenu(null)
     util.setMainWindow(win)
+
+    win.on("close", () => {
+        util.setMainWindow(null)
+    })
+    win.on("closed", () => {
+        util.setMainWindow(null)
+    })
 
     ipcMain.on("dialog:showErrorDialog", async (event, text) => {
         await dialog.showMessageBox({
@@ -36,12 +44,24 @@ const createWindow = () => {
     ipcMain.handle("startTranslate", async (_, args) => {
         const apiKey = args.apiKey
         const targetPath = args.path
+        const type = args.type
         const distPath = path.join(__dirname, "dist")
+        const cachePath = path.join(__dirname, "cache")
 
         util.outputLog("translate start!!")
         try {
-            const executer = new Executer(apiKey, targetPath, distPath, true)
-            executer.execute()
+            if (type === "mod") {
+                const executer = new ModExecuter(apiKey, targetPath, distPath, cachePath)
+                executer.execute()
+            }
+            else if (type === "questgiver") {
+                const executer = new Executer(apiKey, targetPath, distPath, true)
+                executer.execute()
+            }
+            else {
+                const executer = new Executer(apiKey, targetPath, distPath, true)
+                executer.execute()
+            }
         }
         catch(e) {
             await dialog.showMessageBox({

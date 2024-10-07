@@ -19,8 +19,10 @@
     "@electron-forge/plugin-auto-unpack-natives": "^7.4.0",
     "@electron-forge/plugin-fuses": "^7.4.0",
     "@electron/fuses": "^1.8.0",
+    "comment-json": "^4.2.5",
     "electron": "^31.3.1",
-    "openai": "^4.54.0"
+    "openai": "^4.54.0",
+    "unzipper": "^0.12.3"
   },
   "dependencies": {
     "electron-squirrel-startup": "^1.0.1"

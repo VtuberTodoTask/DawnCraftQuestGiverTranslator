@@ -4,6 +4,7 @@ const apiInput = document.getElementById("api")
 const pathInput = document.getElementById("path")
 const outputTextArea = document.getElementById("output")
 const progress = document.getElementById("progress")
+const typeRadio = document.getElementsByName("type")
 
 window.electronAPI.updateOutput((value) => {
     outputTextArea.value += value + "\n"
@@ -38,9 +39,22 @@ sendButton.onclick = () => {
         return
     }
 
+    let typeValue;
+    for (const index in typeRadio) {
+        const radio = typeRadio[index]
+        if (radio.checked) {
+            typeValue = radio.value
+        }
+    }
+    if (!typeValue) {
+        window.electronAPI.showErrorDialog("Undefined type!")
+        return
+    }
+
     sendButton.disabled = true
     window.electronAPI.startTranslate({
         apiKey: apiInput.value,
         path: pathInput.value,
+        type: typeValue,
     })
 }
