@@ -21,7 +21,7 @@
     "@electron/fuses": "^1.8.0",
     "comment-json": "^4.2.5",
     "electron": "^31.3.1",
-    "openai": "^4.54.0",
+    "openai": "^4.68.0",
     "unzipper": "^0.12.3"
   },
   "dependencies": {
